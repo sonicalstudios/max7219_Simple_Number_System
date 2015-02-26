@@ -3,14 +3,15 @@
 // re-written by Jeremy Atkinson From Sonical Studios //
 // for basin number test //
 
-// Inital Relations 
+// Inital Relations
 #include "LedControl.h"
 
 // Arduino Pin 7 to DIN, 6 to Clk, 5 to CS, no.of devices
-LedControl max7219A = LedControl(7, 6, 5, 1);
-LedControl max7219B = LedControl(11, 10, 9, 1);
+LedControl max7219A = LedControl(7, 6, 5, 2);
 
 // Initial Values
+int number; // Would like to be able to call all others from this number
+// Stiff working on that   :-)
 int ones = 0;
 int tens = 0;
 int hundreds = 0;
@@ -24,17 +25,24 @@ void setup()
 {
   Serial.begin(9600);
 
-  // Initialize the MAX7219 device
-  max7219A.shutdown(0, false);  // Enable display
-  max7219A.setIntensity(0, 15);  // Set brightness level (0 is min, 15 is max)
-  max7219A.clearDisplay(0); // Clear display register
+  int devices = max7219A.getDeviceCount();
+
+  for (int address = 0; address < devices; address++) {
+    /*The MAX72XX is in power-saving mode on startup*/
+    max7219A.shutdown(address, false);
+    /* Set the brightness to a medium values */
+    max7219A.setIntensity(address, 8);
+    /* and clear the display */
+    max7219A.clearDisplay(address);
+  }
 
 }
 
 // Runtime Loop
 void loop() {
 
-  runTimer();
+  maths();
+  runMax7219();
 }
 
 // Extra Commands
@@ -51,56 +59,52 @@ void resetAll()  // Reset all to 0
 }
 
 // Run timer till 10 Million
-void runTimer()
+void maths()
 {
 
-  for (ones = 0; ones <= 11; ones++) {
-
-    if ((ones >= 0) && (ones <= 10))
-    {
-      max7219A.setDigit( 0, 0, ones , false);
-    }
+  if ((ones == 0) || (ones <= 11)) {
+    ones++;
+    //max7219A.setDigit( 0, 0, ones , false);
 
     if (ones == 10) {
       ones = 0;
       tens ++;
-      max7219A.setDigit( 0, 0, 0 , false);
-      max7219A.setDigit( 0, 1, tens , false);
+      //max7219A.setDigit( 0, 0, 0 , false);
+      //max7219A.setDigit( 0, 1, tens , false);
 
       if (tens == 10) {
         tens = 0;
         hundreds ++;
-        max7219A.setDigit( 0, 1, 0 , false);
-        max7219A.setDigit( 0, 2, hundreds , false);
+        //max7219A.setDigit( 0, 1, 0 , false);
+        //max7219A.setDigit( 0, 2, hundreds , false);
 
         if (hundreds == 10) {
           hundreds = 0;
           thousands ++;
-          max7219A.setDigit( 0, 2, 0 , false);
-          max7219A.setDigit( 0, 3, thousands , false);
+          //max7219A.setDigit( 0, 2, 0 , false);
+          //max7219A.setDigit( 0, 3, thousands , false);
 
           if (thousands == 10) {
             thousands = 0;
             tenThousands ++;
-            max7219A.setDigit( 0, 3, 0 , false);
-            max7219A.setDigit( 0, 4, tenThousands , false);
+            //max7219A.setDigit( 0, 3, 0 , false);
+            //max7219A.setDigit( 0, 4, tenThousands , false);
 
             if (tenThousands == 10) {
               tenThousands = 0;
               hundredThousands ++;
-              max7219A.setDigit( 0, 4, 0 , false);
-              max7219A.setDigit( 0, 5, hundredThousands , false);
+              //max7219A.setDigit( 0, 4, 0 , false);
+              //max7219A.setDigit( 0, 5, hundredThousands , false);
 
               if (hundredThousands == 10) {
                 hundredThousands = 0;
                 millions ++;
-                max7219A.setDigit( 0, 4, 0 , false);
-                max7219A.setDigit( 0, 5, millions , false);
+                //max7219A.setDigit( 0, 4, 0 , false);
+                //max7219A.setDigit( 0, 5, millions , false);
 
                 if (millions == 10) {
                   millions = 0;
-                  max7219A.setDigit( 0, 4, 0 , false);
-                  max7219A.setDigit( 0, 5, millions , false);
+                  //max7219A.setDigit( 1, 4, 0 , false);
                   resetAll();
                 }
               }
@@ -118,7 +122,26 @@ void runTimer()
     Serial.print(hundreds);
     Serial.print(tens);
     Serial.println(ones);
-    //delay(100);      // Setting to change in needed
+    //delay(100);
   }
+}
+
+void runMax7219()  {
+  
+  max7219A.setDigit( 0, 0, ones , false);
+  max7219A.setDigit( 0, 1, tens , false);
+  max7219A.setDigit( 0, 2, hundreds , false);
+  max7219A.setDigit( 0, 3, thousands , false);
+  max7219A.setDigit( 0, 4, tenThousands , false);
+  max7219A.setDigit( 0, 5, hundredThousands , false);
+  max7219A.setDigit( 0, 6, millions , false);
+  
+  max7219A.setDigit( 1, 0, ones / 2 , false);
+  max7219A.setDigit( 1, 1, tens / 2 , false);
+  max7219A.setDigit( 1, 2, hundreds / 2 , false);
+  max7219A.setDigit( 1, 3, thousands / 2 , false);
+  max7219A.setDigit( 1, 4, tenThousands / 2 , false);
+  max7219A.setDigit( 1, 5, hundredThousands / 2 , false);
+  max7219A.setDigit( 1, 6, millions / 2 , false);
 }
 
