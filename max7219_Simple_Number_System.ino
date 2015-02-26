@@ -69,42 +69,30 @@ void maths()
     if (ones == 10) {
       ones = 0;
       tens ++;
-      //max7219A.setDigit( 0, 0, 0 , false);
-      //max7219A.setDigit( 0, 1, tens , false);
 
       if (tens == 10) {
         tens = 0;
         hundreds ++;
-        //max7219A.setDigit( 0, 1, 0 , false);
-        //max7219A.setDigit( 0, 2, hundreds , false);
 
         if (hundreds == 10) {
           hundreds = 0;
           thousands ++;
-          //max7219A.setDigit( 0, 2, 0 , false);
-          //max7219A.setDigit( 0, 3, thousands , false);
 
           if (thousands == 10) {
             thousands = 0;
             tenThousands ++;
-            //max7219A.setDigit( 0, 3, 0 , false);
-            //max7219A.setDigit( 0, 4, tenThousands , false);
 
             if (tenThousands == 10) {
               tenThousands = 0;
               hundredThousands ++;
-              //max7219A.setDigit( 0, 4, 0 , false);
-              //max7219A.setDigit( 0, 5, hundredThousands , false);
 
               if (hundredThousands == 10) {
                 hundredThousands = 0;
                 millions ++;
-                //max7219A.setDigit( 0, 4, 0 , false);
-                //max7219A.setDigit( 0, 5, millions , false);
 
                 if (millions == 10) {
                   millions = 0;
-                  //max7219A.setDigit( 1, 4, 0 , false);
+
                   resetAll();
                 }
               }
@@ -127,7 +115,7 @@ void maths()
 }
 
 void runMax7219()  {
-  
+
   max7219A.setDigit( 0, 0, ones , false);
   max7219A.setDigit( 0, 1, tens , false);
   max7219A.setDigit( 0, 2, hundreds , false);
@@ -135,7 +123,7 @@ void runMax7219()  {
   max7219A.setDigit( 0, 4, tenThousands , false);
   max7219A.setDigit( 0, 5, hundredThousands , false);
   max7219A.setDigit( 0, 6, millions , false);
-  
+
   max7219A.setDigit( 1, 0, ones / 2 , false);
   max7219A.setDigit( 1, 1, tens / 2 , false);
   max7219A.setDigit( 1, 2, hundreds / 2 , false);
